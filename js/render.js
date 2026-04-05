@@ -106,9 +106,6 @@
       '<div class="hero-card-wrap reveal" data-reveal>' +
       '<article class="card hero-card tilt" data-tilt>' +
       '<div class="hero-card-inner">' +
-      '<div class="hero-avatar" aria-hidden="true">' +
-      escapeHtml(h.card.initials) +
-      "</div>" +
       "<div>" +
       '<h2 class="hero-name">' +
       escapeHtml(h.card.name) +
@@ -127,7 +124,6 @@
       "</article>" +
       "</div>" +
       "</div>" +
-      '<div class="scroll-hint" aria-hidden="true"><span>Scroll</span><span class="scroll-line"></span></div>' +
       "</section>"
     );
   }
@@ -374,6 +370,60 @@
     );
   }
 
+  function renderBlogs(sec) {
+    var tiles = sec.tiles
+      .map(function (b) {
+        var tiltCls = " tilt";
+        var tiltAttr = " data-tilt";
+        var tags = b.tags
+          ? b.tags
+              .map(function (t) {
+                return "<span>" + escapeHtml(t) + "</span>";
+              })
+              .join("")
+          : "";
+        return (
+          '<article class="card tile-card blog-card' +
+          tiltCls +
+          ' reveal" data-reveal' +
+          tiltAttr +
+          ">" +
+          tileDecor() +
+          '<div class="tile-card__inner">' +
+          '<div class="blog-meta">' +
+          '<span class="blog-date">' +
+          escapeHtml(b.date) +
+          "</span>" +
+          (tags ? '<div class="chips subtle">' + tags + "</div>" : "") +
+          "</div>" +
+          "<h3>" +
+          escapeHtml(b.title) +
+          "</h3><p>" +
+          escapeHtml(b.excerpt) +
+          "</p>" +
+          '<div class="blog-content" style="display: none;">' +
+          b.content +
+          "</div>" +
+          '<button class="btn btn-ghost read-more" onclick="toggleBlog(this)">Read more</button>' +
+          "</div></article>"
+        );
+      })
+      .join("");
+    return (
+      '<section id="' +
+      escapeHtml(sec.id) +
+      '" class="' +
+      escapeHtml(sec.sectionClass) +
+      '">' +
+      sectionHead(sec.tag, sec.title, sec.desc) +
+      '<div class="' +
+      escapeHtml(sec.gridClass) +
+      '">' +
+      tiles +
+      "</div></section>"
+    );
+  }
+
   function renderCertSection(sec) {
     var filters = sec.filters
       .map(function (f, i) {
@@ -469,9 +519,7 @@
       })
       .join("");
     return (
-      '<a class="logo" href="#top">' +
-      escapeHtml(logo) +
-      '</a><nav class="nav" aria-label="Primary">' +
+      '<nav class="nav" aria-label="Primary">' +
       links +
       "</nav>"
     );
@@ -501,6 +549,19 @@
       console.error("PORTFOLIO data missing. Load portfolio-data.js first.");
       return;
     }
+    if (global.BLOGS) {
+      P.blogs.tiles = global.BLOGS.map(function(b) {
+        return {
+          kind: "blog",
+          id: b.id,
+          title: b.title,
+          date: b.date,
+          excerpt: b.excerpt,
+          content: b.content,
+          tags: b.tags
+        };
+      });
+    }
     applyMeta(P.meta);
 
     var header = document.querySelector(".site-header");
@@ -525,6 +586,7 @@
       renderEducation(P.education) +
       renderSkills(P.skills) +
       renderProjects(P.projects) +
+      renderBlogs(P.blogs) +
       renderCertSection(P.certifications) +
       renderLanguages(P.languages) +
       renderContact(P.contact);
@@ -540,4 +602,15 @@
   }
 
   global.PortfolioRender = { mount: mount, escapeHtml: escapeHtml };
+
+  global.toggleBlog = function(btn) {
+    var content = btn.previousElementSibling;
+    if (content.style.display === "none") {
+      content.style.display = "block";
+      btn.textContent = "Read less";
+    } else {
+      content.style.display = "none";
+      btn.textContent = "Read more";
+    }
+  };
 })(typeof window !== "undefined" ? window : this);

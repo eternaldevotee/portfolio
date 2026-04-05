@@ -7,7 +7,7 @@
     meta: {
       title: "Subham Ghosh · Software Engineer",
       description: "Subham Ghosh — Software Engineer. Portfolio, experience, and projects.",
-      themeColor: "#05060a",
+      themeColor: "#f8fafc",
     },
 
     branding: {
@@ -19,7 +19,8 @@
       { label: "About", href: "#about" },
       { label: "Experience", href: "#experience" },
       { label: "Projects", href: "#projects" },
-      { label: "Certs", href: "#certifications" },
+      { label: "Blogs", href: "#blogs" },
+      { label: "Certificates", href: "#certifications" },
       { label: "Contact", href: "#contact", cta: true },
     ],
 
@@ -30,18 +31,19 @@
       { label: "Education", href: "#education" },
       { label: "Skills", href: "#skills" },
       { label: "Projects", href: "#projects" },
+      { label: "Blogs", href: "#blogs" },
       { label: "Certifications", href: "#certifications" },
       { label: "Contact", href: "#contact" },
     ],
 
     hero: {
-      eyebrow: "Software Engineer · Kolkata, India",
+      eyebrow: "Software Engineer · Cognizant · Kolkata",
       titleLines: [
         { text: "Building", accent: false },
         { text: "scalable", accent: true },
         { text: "systems & APIs", accent: false },
       ],
-      lead: "BE Computer Science · Spring Boot · Angular · REST · IoT curiosity",
+      lead: "I create production-ready Spring Boot APIs, efficient Angular frontends, and clean solutions that help teams move faster.",
       primaryCta: { label: "View work", href: "#projects" },
       secondaryCta: { label: "Email me", href: "mailto:shubhamofficial0910@gmail.com" },
       card: {
@@ -75,13 +77,12 @@
           body:
             "Computer Science graduate from Chandigarh University with hands-on experience in full-stack delivery: Spring Boot APIs, Angular clients, JWT auth, and agile delivery. Previously trained in C/C++ and OOP at KPIT; now shipping production integrations at Cognizant.",
         },
-        { kind: "stat", cardClass: "stat-card", count: 7.68, label: "CGPA" },
         { kind: "stat", cardClass: "stat-card", value: "2025", label: "Graduation" },
         {
           kind: "rich",
           cardClass: "highlight-card",
           heading: "Highlight",
-          body: "Coursera Star Performer Award — Chandigarh University, Jan 2023",
+          body: "Currently contributing to enterprise backend services at Cognizant.",
         },
       ],
     },
@@ -142,7 +143,7 @@
           icon: "◆",
           school: "Chandigarh University",
           degree: "Bachelor of Engineering, Computer Science",
-          meta: "2021 – 2025 · CGPA 7.68",
+          meta: "2021 – 2025",
           coursework:
             "Coursework: Data Structures, Algorithms, AI, DBMS, OS, Computer Organization, Machine Learning",
         },
@@ -226,10 +227,20 @@
       ],
     },
 
+    blogs: {
+      id: "blogs",
+      sectionClass: "section section-alt",
+      tag: "06",
+      title: { line1: "Latest", line2: "blogs" },
+      desc: "Thoughts on software engineering and technology.",
+      gridClass: "blog-grid",
+      tiles: [] // Will be populated from BLOGS
+    },
+
     certifications: {
       id: "certifications",
       sectionClass: "section section-alt cert-section",
-      tag: "06",
+      tag: "07",
       title: { line1: "Licenses", line2: "certifications" },
       desc: "Filter by focus area.",
       filters: [
@@ -278,7 +289,7 @@
     languages: {
       id: "languages",
       sectionClass: "section",
-      tag: "07",
+      tag: "08",
       title: { line1: "Speaking", line2: "fluently" },
       desc: null,
       gridClass: "lang-row",
@@ -292,18 +303,18 @@
     contact: {
       id: "contact",
       sectionClass: "section section-cta",
-      tag: "08",
+      tag: "09",
       title: { line1: "Say", line2: "hello" },
       desc: null,
       cardHeading: "Let's build something sharp.",
-      body: "Open to roles in backend, full-stack, and platform engineering.",
+      body: "Open to roles in backend and full-stack",
       email: { label: "shubhamofficial0910@gmail.com", href: "mailto:shubhamofficial0910@gmail.com" },
       phone: { label: "+91 8670451757", href: "tel:+918670451757" },
     },
 
     footer: {
       name: "Subham Ghosh",
-      suffix: "Crafted with HTML, CSS & JS",
+      
     },
   };
 })(typeof window !== "undefined" ? window : this);

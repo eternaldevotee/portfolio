@@ -21,7 +21,7 @@
   function initThemeToggle() {
     var btn = document.getElementById("themeToggle");
     if (!btn) return;
-    var t = document.documentElement.getAttribute("data-theme") || "dark";
+    var t = document.documentElement.getAttribute("data-theme") || "light";
     applyTheme(t);
     btn.addEventListener("click", function () {
       var isLight = document.documentElement.getAttribute("data-theme") === "light";
