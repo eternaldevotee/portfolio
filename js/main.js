@@ -1,33 +1,18 @@
 (function () {
   "use strict";
 
-  var THEME_KEY = "portfolio-theme";
-
-  function applyTheme(theme) {
-    var isLight = theme === "light";
-    document.documentElement.setAttribute("data-theme", isLight ? "light" : "dark");
-    try {
-      localStorage.setItem(THEME_KEY, isLight ? "light" : "dark");
-    } catch (e) {}
-    var meta = document.getElementById("meta-theme");
-    if (meta) meta.setAttribute("content", isLight ? "#f0f4f8" : "#05060a");
-    var btn = document.getElementById("themeToggle");
-    if (btn) {
-      btn.setAttribute("aria-label", isLight ? "Switch to dark mode" : "Switch to light mode");
-      btn.setAttribute("title", isLight ? "Use night theme" : "Use daylight theme");
-    }
-  }
-
-  function initThemeToggle() {
-    var btn = document.getElementById("themeToggle");
-    if (!btn) return;
-    var t = document.documentElement.getAttribute("data-theme") || "light";
-    applyTheme(t);
-    btn.addEventListener("click", function () {
-      var isLight = document.documentElement.getAttribute("data-theme") === "light";
-      applyTheme(isLight ? "dark" : "light");
-    });
-  }
+  var HIT_KEY = "portfolio-hit-counter";
+  var QUOTE_KEY = "portfolio-hit-quote-index";
+  var COUNT_API = "https://api.countapi.xyz/hit/subham-portfolio/site";
+  var RATES_API = "https://open.er-api.com/v6/latest/INR";
+  var VISITOR_QUOTES = [
+    "Stats department says: 80% of these visits are me pretending to be different people.",
+    "Fun fact: most of these visits are me checking if the site still works.",
+    "Analytics update: majority of traffic comes from 'localhost guy'.",
+    "Some of you visit often... and by 'you' I mostly mean me.",
+    "Powered by curiosity... and frequent refreshes by the developer.",
+    "Stats say I should probably stop refreshing this page so much.",
+  ];
 
   function escapeHtml(s) {
     var div = document.createElement("div");
@@ -38,50 +23,32 @@
   function renderCerts(filter, certifications) {
     var grid = document.getElementById("cert-grid");
     if (!grid) return;
+
     var show = filter === "all" ? certifications : certifications.filter(function (c) {
       return c.cats.indexOf(filter) !== -1;
     });
+
     grid.innerHTML = show
       .map(function (c) {
         return (
           '<article class="card tile-card cert-card" data-cats="' +
           c.cats.join(" ") +
           '">' +
-          '<div class="tile-card__glow" aria-hidden="true"></div>' +
-          '<div class="tile-card__shine" aria-hidden="true"></div>' +
-          '<header class="cert-card__head">' +
-          '<span class="cert-card__badge" aria-hidden="true">' +
-          '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-          '<path d="M12 2L4 6v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V6l-8-4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>' +
-          '<path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>' +
-          "</svg></span></header>" +
           '<h4 class="cert-card__title">' +
           escapeHtml(c.title) +
           "</h4>" +
           '<p class="cert-card__issuer">' +
           escapeHtml(c.issuer) +
           "</p>" +
-          (c.date
-            ? '<p class="cert-card__date"><span class="cert-card__date-label">Issued</span> ' +
-              escapeHtml(c.date) +
-              "</p>"
-            : "") +
-          (c.id
-            ? '<p class="cert-card__id"><span class="cert-card__id-label">ID</span> ' +
-              escapeHtml(c.id) +
-              "</p>"
-            : "") +
+          (c.date ? '<p class="cert-card__date">Issued: ' + escapeHtml(c.date) + "</p>" : "") +
+          (c.id ? '<p class="cert-card__id">ID: ' + escapeHtml(c.id) + "</p>" : "") +
           '<a class="cert-card__cta" href="' +
           escapeHtml(c.link) +
-          '" target="_blank" rel="noopener noreferrer">' +
-          '<span class="cert-card__cta-text">Verify credential</span>' +
-          '<span class="cert-card__cta-arrow" aria-hidden="true">↗</span></a></article>'
+          '" target="_blank" rel="noopener noreferrer">View certificate</a>' +
+          "</article>"
         );
       })
       .join("");
-    grid.querySelectorAll(".cert-card").forEach(function (el, i) {
-      el.style.animationDelay = Math.min(i * 0.04, 0.6) + "s";
-    });
   }
 
   function bindCertFilters(certifications) {
@@ -96,97 +63,249 @@
     });
   }
 
-  function initTilt() {
-    var prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    var tiltEls = document.querySelectorAll("[data-tilt]");
-    var enableTilt = !prefersReduced && window.matchMedia("(min-width: 900px)").matches;
-    tiltEls.forEach(function (el) {
-      if (!enableTilt) return;
-      el.addEventListener("pointermove", function (e) {
-        var r = el.getBoundingClientRect();
-        var x = e.clientX - r.left;
-        var y = e.clientY - r.top;
-        var px = (x / r.width - 0.5) * 2;
-        var py = (y / r.height - 0.5) * 2;
-        el.style.transform =
-          "perspective(1000px) rotateY(" + px * 4 + "deg) rotateX(" + -py * 4 + "deg) translateZ(0)";
-      });
-      el.addEventListener("pointerleave", function () {
-        el.style.transform = "";
-      });
-    });
-  }
+  function initContactForm() {
+    var form = document.getElementById("contact-form");
+    var submitBtn = document.getElementById("contact-submit");
+    if (!form || !submitBtn) return;
 
-  function initMobileNav() {
-    var toggle = document.querySelector(".menu-toggle");
-    var mobileNav = document.getElementById("mobile-nav");
-    if (!toggle || !mobileNav) return;
-    toggle.addEventListener("click", function () {
-      var open = toggle.getAttribute("aria-expanded") === "true";
-      toggle.setAttribute("aria-expanded", String(!open));
-      if (open) mobileNav.setAttribute("hidden", "");
-      else mobileNav.removeAttribute("hidden");
-    });
-    mobileNav.querySelectorAll("a").forEach(function (a) {
-      a.addEventListener("click", function () {
-        toggle.setAttribute("aria-expanded", "false");
-        mobileNav.setAttribute("hidden", "");
-      });
-    });
-  }
+    var sending = false;
+    var status = null;
 
-  function initStatCounter() {
-    var prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    var stat = document.querySelector("[data-count]");
-    if (!stat || prefersReduced) return;
-    var target = parseFloat(stat.getAttribute("data-count") || "0");
-    var start = 0;
-    var dur = 1200;
-    var t0 = null;
-    function frame(now) {
-      if (t0 === null) t0 = now;
-      var p = Math.min(1, (now - t0) / dur);
-      var eased = 1 - Math.pow(1 - p, 3);
-      var val = start + (target - start) * eased;
-      stat.textContent = val.toFixed(2);
-      if (p < 1) requestAnimationFrame(frame);
+    function ensureStatus() {
+      if (status) return status;
+      status = document.createElement("div");
+      status.id = "contact-status";
+      status.className = "contact-status";
+      status.setAttribute("aria-live", "polite");
+      var actions = form.querySelector(".contact-actions");
+      if (actions && actions.parentNode) {
+        actions.parentNode.insertBefore(status, actions);
+      } else {
+        form.appendChild(status);
+      }
+      return status;
     }
-    var ioStat = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (en) {
-          if (en.isIntersecting) {
-            requestAnimationFrame(frame);
-            ioStat.disconnect();
+
+    function setStatus(type, html) {
+      var box = ensureStatus();
+      box.className = "contact-status " + (type ? "is-" + type : "");
+      box.innerHTML = html;
+    }
+
+    function setDisabled(disabled) {
+      form.querySelectorAll("input, textarea, button").forEach(function (field) {
+        field.disabled = disabled;
+      });
+      submitBtn.disabled = disabled;
+      form.classList.toggle("is-sending", disabled);
+    }
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      if (sending) return;
+
+      if (typeof form.reportValidity === "function" && !form.reportValidity()) {
+        setStatus("error", "Please fill out the missing fields first.");
+        return;
+      }
+
+      var payload = new FormData(form);
+      sending = true;
+      setDisabled(true);
+      setStatus(
+        "loading",
+        '<span class="dialup-badge"><span class="hourglass-gif" aria-hidden="true">⌛</span><span>Dialing up internet...</span></span>'
+      );
+      submitBtn.textContent = "Sending...";
+
+      window.setTimeout(function () {
+        fetch(form.action, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+          },
+          body: payload,
+        })
+          .then(function (response) {
+            if (!response.ok) {
+              return response.json().then(function (payload) {
+                var message = payload && payload.errors && payload.errors[0] && payload.errors[0].message;
+                throw new Error(message || "There was a problem sending your message.");
+              });
+            }
+            setStatus(
+              "success",
+              '<span class="success-mark" aria-hidden="true">✓</span><span class="success-text">Connection successful. Message sent.</span><span class="success-modem" aria-hidden="true">56K MODEM</span>'
+            );
+            form.reset();
+          })
+          .catch(function (error) {
+            setStatus("error", error && error.message ? error.message : "There was a problem sending your message.");
+          })
+          .finally(function () {
+            sending = false;
+            setDisabled(false);
+            submitBtn.textContent = "Send Message";
+          });
+      }, 1000);
+    });
+  }
+
+  function setVisitorQuote() {
+    var joke = document.getElementById("hit-joke");
+    if (!joke || !VISITOR_QUOTES.length) return;
+
+    var index = 0;
+    try {
+      index = parseInt(localStorage.getItem(QUOTE_KEY) || "-1", 10);
+      if (isNaN(index)) index = -1;
+      index = (index + 1) % VISITOR_QUOTES.length;
+      localStorage.setItem(QUOTE_KEY, String(index));
+    } catch (e) {
+      index = Math.floor(Math.random() * VISITOR_QUOTES.length);
+    }
+
+    joke.textContent = VISITOR_QUOTES[index];
+  }
+
+  function updateVisitorCounter() {
+    var counterEl = document.getElementById("hit-counter");
+    if (!counterEl) return;
+
+    function renderCount(value) {
+      var num = Math.max(0, parseInt(value || "0", 10) || 0);
+      counterEl.textContent = String(num).padStart(6, "0");
+    }
+
+    var count = 0;
+    try {
+      count = parseInt(localStorage.getItem(HIT_KEY) || "0", 10);
+    } catch (e) {
+      count = 0;
+    }
+    count += 1;
+    try {
+      localStorage.setItem(HIT_KEY, String(count));
+    } catch (e2) {}
+    renderCount(count);
+  }
+
+  function updateWorldClocks() {
+    function put(id, zone) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      try {
+        var text = new Intl.DateTimeFormat("en-GB", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+          timeZone: zone,
+        }).format(new Date());
+        el.textContent = text;
+      } catch (err) {
+        el.textContent = "--:--:--";
+      }
+    }
+
+    put("clock-us", "America/New_York");
+    put("clock-fr", "Europe/Paris");
+    put("clock-uk", "Europe/London");
+    put("clock-ch", "Europe/Zurich");
+    put("clock-de", "Europe/Berlin");
+    put("clock-jp", "Asia/Tokyo");
+    put("clock-ae", "Asia/Dubai");
+  }
+
+  function updateCurrencyToINR() {
+    var map = [
+      { id: "rate-us", code: "USD", label: "$/₹ USD/INR" },
+      { id: "rate-eu", code: "EUR", label: "€/₹ EUR/INR" },
+      { id: "rate-gb", code: "GBP", label: "£/₹ GBP/INR" },
+      { id: "rate-ca", code: "CAD", label: "C$/₹ CAD/INR" },
+      { id: "rate-au", code: "AUD", label: "A$/₹ AUD/INR" },
+      { id: "rate-chf", code: "CHF", label: "CHF/₹ CHF/INR" },
+      { id: "rate-jp", code: "JPY", label: "¥/₹ JPY/INR" },
+      { id: "rate-ae", code: "AED", label: "AED/₹ AED/INR" },
+      { id: "rate-sg", code: "SGD", label: "S$/₹ SGD/INR" },
+      { id: "rate-cn", code: "CNY", label: "¥/₹ CNY/INR" },
+    ];
+
+    function setFallback() {
+      map.forEach(function (entry) {
+        var el = document.getElementById(entry.id);
+        if (!el) return;
+        el.textContent = entry.label + ": N/A";
+      });
+    }
+
+    fetch(RATES_API)
+      .then(function (response) {
+        if (!response.ok) {
+          throw new Error("rates api request failed");
+        }
+        return response.json();
+      })
+      .then(function (payload) {
+        var rates = payload && payload.rates ? payload.rates : null;
+        if (!rates) {
+          throw new Error("missing rates payload");
+        }
+
+        map.forEach(function (entry) {
+          var el = document.getElementById(entry.id);
+          if (!el) return;
+
+          var perInr = rates[entry.code];
+          if (!perInr || perInr <= 0) {
+            el.textContent = entry.label + ": N/A";
+            return;
           }
+
+          var inr = 1 / perInr;
+          el.textContent = entry.label + ": " + inr.toFixed(2);
         });
-      },
-      { threshold: 0.4 }
-    );
-    ioStat.observe(stat);
+      })
+      .catch(function () {
+        setFallback();
+      });
   }
 
   function boot() {
     if (typeof PortfolioRender !== "undefined") {
       PortfolioRender.mount();
+      if (window.PortfolioComments && typeof window.PortfolioComments.init === "function") {
+        window.PortfolioComments.init();
+      }
     }
 
     var P = window.PORTFOLIO;
-    if (!P || !P.certifications || !P.certifications.items) {
-      console.warn("PORTFOLIO.certifications.items missing.");
-    } else {
+    if (P && P.certifications && P.certifications.items) {
       var certs = P.certifications.items;
       renderCerts("all", certs);
       bindCertFilters(certs);
     }
 
-    initThemeToggle();
-    initTilt();
-    initMobileNav();
+    initContactForm();
 
     var y = document.getElementById("year");
     if (y) y.textContent = String(new Date().getFullYear());
 
-    initStatCounter();
+    var lastUpdated = document.getElementById("last-updated");
+    if (lastUpdated) {
+      var d = new Date();
+      var mm = String(d.getMonth() + 1).padStart(2, "0");
+      var dd = String(d.getDate()).padStart(2, "0");
+      var yyyy = String(d.getFullYear());
+      lastUpdated.textContent = mm + "/" + dd + "/" + yyyy;
+    }
+
+    updateVisitorCounter();
+    setVisitorQuote();
+    updateWorldClocks();
+    updateCurrencyToINR();
+    window.setInterval(updateWorldClocks, 1000);
+    window.setInterval(updateCurrencyToINR, 60000);
   }
 
   if (document.readyState === "loading") {

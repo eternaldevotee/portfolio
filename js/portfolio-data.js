@@ -1,7 +1,3 @@
-/**
- * Portfolio content — edit THIS file to change copy, links, sections, and certifications.
- * Structure matches what render.js expects; keep shapes consistent when adding items.
- */
 (function (global) {
   global.PORTFOLIO = {
     meta: {
@@ -14,37 +10,39 @@
       logo: "SG",
     },
 
-    /** Primary nav (header) */
     nav: [
-      { label: "About", href: "#about" },
-      { label: "Experience", href: "#experience" },
-      { label: "Projects", href: "#projects" },
-      { label: "Blogs", href: "#blogs" },
-      { label: "Certificates", href: "#certifications" },
-      { label: "Contact", href: "#contact", cta: true },
+      { label: "Home", href: "index.html" },
+      { label: "About", href: "about.html" },
+      { label: "Experience", href: "experience.html" },
+      { label: "Projects", href: "projects.html" },
+      { label: "Blogs", href: "blogs.html" },
+      { label: "Certificates", href: "certifications.html" },
+      { label: "Languages", href: "languages.html" },
+      { label: "Contact", href: "contact.html", cta: true },
     ],
 
-    /** Mobile drawer — can list every section */
     mobileNav: [
-      { label: "About", href: "#about" },
-      { label: "Experience", href: "#experience" },
-      { label: "Education", href: "#education" },
-      { label: "Skills", href: "#skills" },
-      { label: "Projects", href: "#projects" },
-      { label: "Blogs", href: "#blogs" },
-      { label: "Certifications", href: "#certifications" },
-      { label: "Contact", href: "#contact" },
+      { label: "Home", href: "index.html" },
+      { label: "About", href: "about.html" },
+      { label: "Experience", href: "experience.html" },
+      { label: "Education", href: "education.html" },
+      { label: "Skills", href: "skills.html" },
+      { label: "Projects", href: "projects.html" },
+      { label: "Blogs", href: "blogs.html" },
+      { label: "Certifications", href: "certifications.html" },
+      { label: "Languages", href: "languages.html" },
+      { label: "Contact", href: "contact.html" },
     ],
 
     hero: {
-      eyebrow: "Software Engineer · Cognizant · Kolkata",
+      eyebrow: "Software Engineer Trainee · Cognizant · Kolkata",
       titleLines: [
         { text: "Building", accent: false },
         { text: "scalable", accent: true },
         { text: "systems & APIs", accent: false },
       ],
       lead: "I create production-ready Spring Boot APIs, efficient Angular frontends, and clean solutions that help teams move faster.",
-      primaryCta: { label: "View work", href: "#projects" },
+      primaryCta: { label: "View work", href: "projects.html" },
       secondaryCta: { label: "Email me", href: "mailto:shubhamofficial0910@gmail.com" },
       card: {
         initials: "SG",
@@ -52,7 +50,6 @@
         role: "Software Engineer Trainee · Cognizant",
         meta: [
           { label: "Email", value: "shubhamofficial0910@gmail.com" },
-          { label: "Phone", value: "+91 8670451757" },
           { label: "Location", value: "Kolkata" },
         ],
         links: [
@@ -101,19 +98,15 @@
           company: "Cognizant",
           role: "Software Engineer Trainee",
           badge: "Current",
-          meta: "Feb 2026 – Present · Kolkata · ~2 months",
+          meta: "Jul 2025 – Present · Coimbatore/Kolkata",
           bullets: [
+            "[timeline] Feb 2026 – Present · Software Engineer Trainee",
             "Built RESTful APIs with Spring Boot and integrated Angular frontend services.",
-            "Modular backend services following REST for scalable web apps.",
+            "Developed modular backend services following REST for scalable web apps.",
+            "[timeline] Jul 2025 – Feb 2026 · Programmer Analyst Trainee",
+            "Contributed to full-stack integration tasks across client project modules.",
+            "Supported backend and frontend implementation during delivery cycles.",
           ],
-        },
-        {
-          kind: "job",
-          tilt: true,
-          company: "Cognizant",
-          role: "Programmer Analyst Trainee",
-          meta: "Jul 2025 – Feb 2026 · Coimbatore · 8 months",
-          bullets: ["Continued full-stack and integration work across client projects."],
         },
         {
           kind: "job",
@@ -234,7 +227,7 @@
       title: { line1: "Latest", line2: "blogs" },
       desc: "Thoughts on software engineering and technology.",
       gridClass: "blog-grid",
-      tiles: [] // Will be populated from BLOGS
+      tiles: []
     },
 
     certifications: {
@@ -290,7 +283,7 @@
       id: "languages",
       sectionClass: "section",
       tag: "08",
-      title: { line1: "Speaking", line2: "fluently" },
+      title: { line1: "Languages", line2: "" },
       desc: null,
       gridClass: "lang-row",
       tiles: [
@@ -309,7 +302,6 @@
       cardHeading: "Let's build something sharp.",
       body: "Open to roles in backend and full-stack",
       email: { label: "shubhamofficial0910@gmail.com", href: "mailto:shubhamofficial0910@gmail.com" },
-      phone: { label: "+91 8670451757", href: "tel:+918670451757" },
     },
 
     footer: {

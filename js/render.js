@@ -1,6 +1,3 @@
-/**
- * Builds the portfolio DOM from PORTFOLIO (portfolio-data.js). Do not edit HTML in index.html for content.
- */
 (function (global) {
   "use strict";
 
@@ -13,10 +10,28 @@
     return d.innerHTML;
   }
 
+  function getReadingTimeText(html) {
+    var text = String(html || "")
+      .replace(/<[^>]*>/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    var words = text ? text.split(" ").length : 0;
+    var minutes = Math.max(1, Math.ceil(words / 180));
+    return minutes + " min read";
+  }
+
   function tileDecor() {
     return (
       '<div class="tile-card__glow" aria-hidden="true"></div>' +
       '<div class="tile-card__shine" aria-hidden="true"></div>'
+    );
+  }
+
+  function tableBlock(inner) {
+    return (
+      '<table class="section-table" cellpadding="4" cellspacing="0" border="1"><tr><td>' +
+      inner +
+      "</td></tr></table>"
     );
   }
 
@@ -25,23 +40,14 @@
       desc != null && desc !== ""
         ? '<p class="section-desc tile-section-desc">' + escapeHtml(desc) + "</p>"
         : "";
+    var titleText = [title && title.line1 ? title.line1 : "", title && title.line2 ? title.line2 : ""]
+      .join(" ")
+      .replace(/\s+/g, " ")
+      .trim();
     return (
       '<div class="section-head tile-section-head reveal" data-reveal>' +
-      '<span class="section-tag">' +
-      escapeHtml(tag) +
-      "</span>" +
       '<h2 class="section-title tile-title">' +
-      '<span class="tile-title-glare" aria-hidden="true"></span>' +
-      '<span class="tile-title-inner">' +
-      '<span class="tile-title-line1">' +
-      escapeHtml(title.line1) +
-      "</span>" +
-      '<span class="tile-title-amp">&amp;</span>' +
-      '<span class="tile-title-line2">' +
-      escapeHtml(title.line2) +
-      "</span>" +
-      "</span>" +
-      '<span class="tile-title-track" aria-hidden="true"><span class="tile-title-progress"></span></span>' +
+      escapeHtml(titleText) +
       "</h2>" +
       d +
       "</div>"
@@ -79,6 +85,7 @@
       .join("");
     return (
       '<section class="hero">' +
+      tableBlock(
       '<div class="hero-grid">' +
       '<div class="hero-copy reveal" data-reveal>' +
       '<p class="eyebrow">' +
@@ -123,7 +130,7 @@
       "</div>" +
       "</article>" +
       "</div>" +
-      "</div>" +
+      "</div>") +
       "</section>"
     );
   }
@@ -171,12 +178,15 @@
       '" class="' +
       escapeHtml(sec.sectionClass) +
       '">' +
-      sectionHead(sec.tag, sec.title, sec.desc) +
-      '<div class="' +
-      escapeHtml(sec.gridClass) +
-      '">' +
-      tiles +
-      "</div></section>"
+      tableBlock(
+        sectionHead(sec.tag, sec.title, sec.desc) +
+          '<div class="' +
+          escapeHtml(sec.gridClass) +
+          '">' +
+          tiles +
+          "</div>"
+      ) +
+      "</section>"
     );
   }
 
@@ -190,7 +200,9 @@
           : "";
         var bullets = j.bullets
           .map(function (b) {
-            return "<li>" + escapeHtml(b) + "</li>";
+            var isTimeline = b.indexOf("[timeline] ") === 0;
+            var text = isTimeline ? b.replace("[timeline] ", "") : b;
+            return "<li" + (isTimeline ? ' class=\"timeline-item\"' : "") + ">" + escapeHtml(text) + "</li>";
           })
           .join("");
         return (
@@ -223,12 +235,15 @@
       '" class="' +
       escapeHtml(sec.sectionClass) +
       '">' +
-      sectionHead(sec.tag, sec.title, sec.desc) +
-      '<div class="' +
-      escapeHtml(sec.stackClass) +
-      '">' +
-      tiles +
-      "</div></section>"
+      tableBlock(
+        sectionHead(sec.tag, sec.title, sec.desc) +
+          '<div class="' +
+          escapeHtml(sec.stackClass) +
+          '">' +
+          tiles +
+          "</div>"
+      ) +
+      "</section>"
     );
   }
 
@@ -274,12 +289,15 @@
       '" class="' +
       escapeHtml(sec.sectionClass) +
       '">' +
-      sectionHead(sec.tag, sec.title, sec.desc) +
-      '<div class="' +
-      escapeHtml(sec.gridClass) +
-      '">' +
-      tiles +
-      "</div></section>"
+      tableBlock(
+        sectionHead(sec.tag, sec.title, sec.desc) +
+          '<div class="' +
+          escapeHtml(sec.gridClass) +
+          '">' +
+          tiles +
+          "</div>"
+      ) +
+      "</section>"
     );
   }
 
@@ -311,12 +329,15 @@
       '" class="' +
       escapeHtml(sec.sectionClass) +
       '">' +
-      sectionHead(sec.tag, sec.title, sec.desc) +
-      '<div class="' +
-      escapeHtml(sec.gridClass) +
-      '">' +
-      tiles +
-      "</div></section>"
+      tableBlock(
+        sectionHead(sec.tag, sec.title, sec.desc) +
+          '<div class="' +
+          escapeHtml(sec.gridClass) +
+          '">' +
+          tiles +
+          "</div>"
+      ) +
+      "</section>"
     );
   }
 
@@ -361,12 +382,15 @@
       '" class="' +
       escapeHtml(sec.sectionClass) +
       '">' +
-      sectionHead(sec.tag, sec.title, sec.desc) +
-      '<div class="' +
-      escapeHtml(sec.gridClass) +
-      '">' +
-      tiles +
-      "</div></section>"
+      tableBlock(
+        sectionHead(sec.tag, sec.title, sec.desc) +
+          '<div class="' +
+          escapeHtml(sec.gridClass) +
+          '">' +
+          tiles +
+          "</div>"
+      ) +
+      "</section>"
     );
   }
 
@@ -374,7 +398,7 @@
     var tiles = sec.tiles
       .map(function (b) {
         var tiltCls = " tilt";
-        var tiltAttr = " data-tilt";
+        var readTime = getReadingTimeText(b.content);
         var tags = b.tags
           ? b.tags
               .map(function (t) {
@@ -385,14 +409,14 @@
         return (
           '<article class="card tile-card blog-card' +
           tiltCls +
-          ' reveal" data-reveal' +
-          tiltAttr +
-          ">" +
+          ' reveal" data-reveal>' +
           tileDecor() +
           '<div class="tile-card__inner">' +
           '<div class="blog-meta">' +
           '<span class="blog-date">' +
           escapeHtml(b.date) +
+          '</span><span class="blog-readtime">' +
+          escapeHtml(readTime) +
           "</span>" +
           (tags ? '<div class="chips subtle">' + tags + "</div>" : "") +
           "</div>" +
@@ -404,7 +428,9 @@
           '<div class="blog-content" style="display: none;">' +
           b.content +
           "</div>" +
-          '<button class="btn btn-ghost read-more" onclick="toggleBlog(this)">Read more</button>' +
+          '<a class="btn btn-ghost read-more" href="blog-detail.html?slug=' +
+          encodeURIComponent(b.id) +
+          '">Read more</a>' +
           "</div></article>"
         );
       })
@@ -415,12 +441,96 @@
       '" class="' +
       escapeHtml(sec.sectionClass) +
       '">' +
-      sectionHead(sec.tag, sec.title, sec.desc) +
-      '<div class="' +
-      escapeHtml(sec.gridClass) +
-      '">' +
-      tiles +
-      "</div></section>"
+      tableBlock(
+        sectionHead(sec.tag, sec.title, sec.desc) +
+          '<div class="' +
+          escapeHtml(sec.gridClass) +
+          '">' +
+          tiles +
+          "</div>"
+      ) +
+      "</section>"
+    );
+  }
+
+  function getBlogCollection() {
+    if (global.BlogCMS && typeof global.BlogCMS.getBlogs === "function") {
+      return global.BlogCMS.getBlogs();
+    }
+    return global.BLOGS || [];
+  }
+
+  function getBlogSlug() {
+    var params = new URLSearchParams(global.location ? global.location.search : "");
+    return params.get("slug") || "";
+  }
+
+  function renderBlogDetail() {
+    var slug = getBlogSlug();
+    var blog = null;
+    var blogs = getBlogCollection();
+    if (blogs && blogs.length) {
+      blog = blogs.find(function (item) {
+        return item.id === slug;
+      }) || blogs[0];
+    }
+
+    if (!blog) {
+      if (global.BlogCMS && typeof global.BlogCMS.isReady === "function" && !global.BlogCMS.isReady()) {
+        return '<section class="blog-detail"><p>Loading blog post...</p></section>';
+      }
+      return '<section class="blog-detail"><p>Blog not found.</p></section>';
+    }
+
+    document.title = blog.title + " · Blogs · Subham Ghosh";
+    var md = document.querySelector('meta[name="description"]');
+    if (md) md.setAttribute("content", blog.excerpt || blog.title);
+
+    var readTime = getReadingTimeText(blog.content);
+    var tagList = blog.tags
+      ? blog.tags
+          .map(function (tag) {
+            return '<span>' + escapeHtml(tag) + '</span>';
+          })
+          .join("")
+      : "";
+
+    return (
+      '<section class="blog-detail">' +
+      tableBlock(
+        '<article class="card tile-card blog-detail-card reveal" data-reveal>' +
+          tileDecor() +
+          '<div class="tile-card__inner">' +
+          '<p class="blog-detail__back"><a class="btn btn-ghost" href="blogs.html">&larr; Back to Blogs</a></p>' +
+          '<div class="blog-meta">' +
+          '<span class="blog-date">' +
+          escapeHtml(blog.date) +
+          '</span><span class="blog-readtime">' +
+          escapeHtml(readTime) +
+          "</span>" +
+          (tagList ? '<div class="chips subtle">' + tagList + "</div>" : "") +
+          '</div>' +
+          '<h1 class="blog-detail__title">' +
+          escapeHtml(blog.title) +
+          '</h1>' +
+          '<div class="blog-detail__content">' +
+          blog.content +
+          '</div>' +
+          '<section id="blog-comments-root" class="blog-comments" data-post-slug="' +
+          escapeHtml(blog.id) +
+          '">' +
+          '<div class="table-wrap"><table class="old-table"><tr><td>' +
+          '<div class="card tile-card reveal" data-reveal>' +
+          tileDecor() +
+          '<div class="tile-card__inner">' +
+          '<h2 class="section-title">Guestbook Comments</h2>' +
+          '<p class="subtle">Loading comments...</p>' +
+          '</div></div></td></tr></table></div>' +
+          '</section>' +
+          '</div>' +
+          '</div></article>'
+      ) +
+      '</section>'
     );
   }
 
@@ -445,10 +555,13 @@
       '" class="' +
       escapeHtml(sec.sectionClass) +
       '">' +
-      sectionHead(sec.tag, sec.title, sec.desc) +
-      '<div class="cert-toolbar reveal" data-reveal">' +
-      filters +
-      '</div><div class="cert-grid" id="cert-grid"></div></section>'
+      tableBlock(
+        sectionHead(sec.tag, sec.title, sec.desc) +
+          '<div class="cert-toolbar reveal" data-reveal>' +
+          filters +
+          '</div><div class="cert-grid" id="cert-grid"></div>'
+      ) +
+      "</section>"
     );
   }
 
@@ -472,12 +585,15 @@
       '" class="' +
       escapeHtml(sec.sectionClass) +
       '">' +
-      sectionHead(sec.tag, sec.title, sec.desc) +
-      '<div class="' +
-      escapeHtml(sec.gridClass) +
-      '">' +
-      tiles +
-      "</div></section>"
+      tableBlock(
+        sectionHead(sec.tag, sec.title, sec.desc) +
+          '<div class="' +
+          escapeHtml(sec.gridClass) +
+          '">' +
+          tiles +
+          "</div>"
+      ) +
+      "</section>"
     );
   }
 
@@ -488,24 +604,32 @@
       '" class="' +
       escapeHtml(sec.sectionClass) +
       '">' +
-      sectionHead(sec.tag, sec.title, sec.desc) +
-      '<div class="card tile-card cta-card reveal" data-reveal>' +
-      tileDecor() +
-      '<div class="tile-card__inner">' +
-      '<h3 class="cta-card__heading">' +
-      escapeHtml(sec.cardHeading) +
-      "</h3><p>" +
-      escapeHtml(sec.body) +
-      '</p><div class="cta-actions">' +
-      '<a class="btn btn-primary" href="' +
-      escapeHtml(sec.email.href) +
-      '">' +
-      escapeHtml(sec.email.label) +
-      '</a><a class="btn btn-ghost" href="' +
-      escapeHtml(sec.phone.href) +
-      '">' +
-      escapeHtml(sec.phone.label) +
-      "</a></div></div></div></section>"
+      tableBlock(
+        sectionHead(sec.tag, sec.title, sec.desc) +
+          '<div class="contact-panel reveal" data-reveal>' +
+          '<div class="contact-panel__info">' +
+          '<h3 class="cta-card__heading">' +
+          escapeHtml(sec.cardHeading) +
+          '</h3><p>' +
+          escapeHtml(sec.body) +
+          '</p><div class="contact-meta">' +
+          '<p><strong>Email:</strong> ' + escapeHtml(sec.email.label) + '</p>' +
+          '</div></div>' +
+          '<div class="contact-panel__form-wrap">' +
+          '<form id="contact-form" class="contact-form" action="https://formspree.io/f/xlganyea" method="POST">' +
+          '<label class="contact-field"><span>Name</span><input type="text" name="name" required /></label>' +
+          '<label class="contact-field"><span>Email</span><input type="email" name="email" required /></label>' +
+          '<label class="contact-field"><span>Title</span><input type="text" name="title" required /></label>' +
+          '<label class="contact-field"><span>Message</span><textarea name="message" rows="6" required></textarea></label>' +
+          '<input type="hidden" name="_subject" value="New message from portfolio site" />' +
+          '<input type="hidden" name="_captcha" value="false" />' +
+          '<div class="contact-actions">' +
+          '<button class="contact-submit" type="submit" id="contact-submit">Send Message</button>' +
+          '</div>' +
+          '</form></div>' +
+          '</div>'
+      ) +
+      "</section>"
     );
   }
 
@@ -543,6 +667,36 @@
     if (mt && meta.themeColor) mt.setAttribute("content", meta.themeColor);
   }
 
+  function getPageKey(main) {
+    if (main && main.dataset && main.dataset.page) {
+      return main.dataset.page;
+    }
+    var path = (global.location && global.location.pathname) || "";
+    var fileName = path.split("/").pop() || "index.html";
+    var base = fileName.toLowerCase().replace(/\.html$/, "");
+    if (!base || base === "index") return "home";
+    return base;
+  }
+
+  function renderPage(pageKey) {
+    var pages = {
+      home: function () { return renderHero(P.hero); },
+      about: function () { return renderAbout(P.about); },
+      experience: function () { return renderExperience(P.experience); },
+      education: function () { return renderEducation(P.education); },
+      skills: function () { return renderSkills(P.skills); },
+      projects: function () { return renderProjects(P.projects); },
+      blogs: function () { return renderBlogs(P.blogs); },
+      "blog-detail": function () { return renderBlogDetail(); },
+      certifications: function () { return renderCertSection(P.certifications); },
+      languages: function () { return renderLanguages(P.languages); },
+      contact: function () { return renderContact(P.contact); }
+    };
+
+    if (pages[pageKey]) return pages[pageKey]();
+    return renderHero(P.hero);
+  }
+
   function mount() {
     P = global.PORTFOLIO;
     if (!P) {
@@ -550,7 +704,8 @@
       return;
     }
     if (global.BLOGS) {
-      P.blogs.tiles = global.BLOGS.map(function(b) {
+      var blogSource = getBlogCollection();
+      P.blogs.tiles = blogSource.map(function(b) {
         return {
           kind: "blog",
           id: b.id,
@@ -566,11 +721,9 @@
 
     var header = document.querySelector(".site-header");
     if (header) {
-      var themeBtn = header.querySelector(".theme-toggle");
       var menuBtn = header.querySelector(".menu-toggle");
-      var themeHtml = themeBtn ? themeBtn.outerHTML : "";
       var menuHtml = menuBtn ? menuBtn.outerHTML : "";
-      header.innerHTML = renderHeader(P.nav, P.branding.logo) + themeHtml + menuHtml;
+      header.innerHTML = renderHeader(P.nav, P.branding.logo) + menuHtml;
     }
 
     var mnav = document.getElementById("mobile-nav");
@@ -579,26 +732,7 @@
     var main = document.getElementById("top");
     if (!main) return;
 
-    main.innerHTML =
-      renderHero(P.hero) +
-      renderAbout(P.about) +
-      renderExperience(P.experience) +
-      renderEducation(P.education) +
-      renderSkills(P.skills) +
-      renderProjects(P.projects) +
-      renderBlogs(P.blogs) +
-      renderCertSection(P.certifications) +
-      renderLanguages(P.languages) +
-      renderContact(P.contact);
-
-    var foot = document.querySelector(".site-footer p");
-    if (foot) {
-      foot.innerHTML =
-        '© <span id="year"></span> ' +
-        escapeHtml(P.footer.name) +
-        " · " +
-        escapeHtml(P.footer.suffix);
-    }
+    main.innerHTML = renderPage(getPageKey(main));
   }
 
   global.PortfolioRender = { mount: mount, escapeHtml: escapeHtml };
@@ -613,4 +747,13 @@
       btn.textContent = "Read more";
     }
   };
+
+  if (!global.__blogCmsRenderBound) {
+    global.__blogCmsRenderBound = true;
+    global.addEventListener("blogcms:updated", function () {
+      if (global.PortfolioRender && typeof global.PortfolioRender.mount === "function") {
+        global.PortfolioRender.mount();
+      }
+    });
+  }
 })(typeof window !== "undefined" ? window : this);

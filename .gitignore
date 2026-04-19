@@ -1,0 +1,30 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs and temp
+*.log
+*.tmp
+*.temp
+
+# Node or tooling cache (if used later)
+node_modules/
+dist/
+build/
+coverage/
+.npm/
+
+# Environment secrets
+.env
+.env.*
+!.env.example
+
+# Keep Supabase SQL migrations/scripts in repo
+!supabase/
+!supabase/*.sql
