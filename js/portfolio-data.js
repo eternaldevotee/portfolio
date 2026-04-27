@@ -7,7 +7,7 @@
     },
 
     branding: {
-      logo: "SG",
+      logo: "",
     },
 
     nav: [
@@ -309,4 +309,6 @@
       
     },
   };
+
+
 })(typeof window !== "undefined" ? window : this);

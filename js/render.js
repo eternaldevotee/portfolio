@@ -528,7 +528,7 @@
           '</div></div></td></tr></table></div>' +
           '</section>' +
           '</div>' +
-          '</div></article>'
+          '</article>'
       ) +
       '</section>'
     );
@@ -643,9 +643,15 @@
       })
       .join("");
     return (
+      '<div class="header-container">' +
+      '<button type="button" class="theme-toggle-nav" aria-label="Toggle dark/light theme" title="Toggle dark/light theme">' +
+      '<span class="theme-toggle-icon">🌙</span>' +
+      '</button>' +
+      (logo ? '<h1 class="logo">' + escapeHtml(logo) + '</h1>' : '') +
       '<nav class="nav" aria-label="Primary">' +
       links +
-      "</nav>"
+      '</nav>' +
+      '</div>'
     );
   }
 
@@ -718,12 +724,14 @@
       });
     }
     applyMeta(P.meta);
+    var pageKey = getPageKey(document.getElementById("top"));
 
     var header = document.querySelector(".site-header");
     if (header) {
       var menuBtn = header.querySelector(".menu-toggle");
       var menuHtml = menuBtn ? menuBtn.outerHTML : "";
-      header.innerHTML = renderHeader(P.nav, P.branding.logo) + menuHtml;
+      var logoText = pageKey === "admin" ? "" : P.branding.logo;
+      header.innerHTML = renderHeader(P.nav, logoText) + menuHtml;
     }
 
     var mnav = document.getElementById("mobile-nav");

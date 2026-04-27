@@ -179,10 +179,10 @@
     var name = displayName(comment);
     var ownerBadge = isOwnerComment(comment) && !comment.is_anonymous ? '<span class="comment-owner">*BUILDER*</span>' : "";
     var deleteBtn = isOwnerSessionActive()
-      ? '<button type="button" class="btn btn-ghost comment-delete" data-id="' + comment.id + '">Hide</button>'
+      ? '<button type="button" class="btn btn-ghost comment-delete" data-id="' + comment.id + '" title="Hide this comment">🗑</button>'
       : "";
     var replyBtn = depth < MAX_REPLY_DEPTH
-      ? '<button type="button" class="btn btn-ghost comment-reply" data-id="' + comment.id + '">Reply</button>'
+      ? '<button type="button" class="btn btn-ghost comment-reply" data-id="' + comment.id + '" title="Reply to this comment">💬</button>'
       : "";
 
     var replies = node.replies
@@ -191,8 +191,10 @@
       })
       .join("");
 
+    var replyClass = depth > 0 ? ' reply level-' + depth : '';
+
     return (
-      '<li class="comment-item" data-comment-id="' + comment.id + '">' +
+      '<li class="comment-item' + replyClass + '" data-comment-id="' + comment.id + '">' +
       '<div class="comment-head">' +
       '<span class="comment-author">' + escapeHtml(name) + '</span>' +
       ownerBadge +
@@ -354,8 +356,8 @@
       var reaction = getReaction(commentId);
       var dislikeDisplay = reaction.dislikes > 0 ? -reaction.dislikes : 0;
       return (
-        '<button type="button" class="btn btn-ghost comment-vote comment-vote-like' + (reaction.myVote === 1 ? ' active' : '') + '" data-id="' + commentId + '" data-vote="1">Like <span class="vote-count like-count">' + reaction.likes + '</span></button>' +
-        '<button type="button" class="btn btn-ghost comment-vote comment-vote-dislike' + (reaction.myVote === -1 ? ' active' : '') + '" data-id="' + commentId + '" data-vote="-1">Dislike <span class="vote-count dislike-count">' + dislikeDisplay + '</span></button>'
+        '<button type="button" class="btn btn-ghost comment-vote comment-vote-like' + (reaction.myVote === 1 ? ' voted' : '') + '" data-id="' + commentId + '" data-vote="1" title="Like this comment">👍 <span class="vote-count like-count">' + reaction.likes + '</span></button>' +
+        '<button type="button" class="btn btn-ghost comment-vote comment-vote-dislike' + (reaction.myVote === -1 ? ' voted' : '') + '" data-id="' + commentId + '" data-vote="-1" title="Dislike this comment">👎 <span class="vote-count dislike-count">' + dislikeDisplay + '</span></button>'
       );
     }
 
