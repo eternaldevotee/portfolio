@@ -566,16 +566,46 @@
   }
 
   function renderLanguages(sec) {
+    function languageScore(level) {
+      var value = String(level || "").toLowerCase();
+      if (value.indexOf("native") !== -1 || value.indexOf("bilingual") !== -1) return 98;
+      if (value.indexOf("full professional") !== -1) return 90;
+      if (value.indexOf("professional") !== -1) return 80;
+      if (value.indexOf("working") !== -1) return 65;
+      if (value.indexOf("limited") !== -1) return 45;
+      return 70;
+    }
+
+    function languageTag(level) {
+      var value = String(level || "").toLowerCase();
+      if (value.indexOf("native") !== -1 || value.indexOf("bilingual") !== -1) return "NATIVE";
+      if (value.indexOf("full professional") !== -1) return "C1";
+      if (value.indexOf("professional") !== -1) return "B2";
+      if (value.indexOf("working") !== -1) return "B1";
+      return "A2";
+    }
+
     var tiles = sec.tiles
       .map(function (l) {
+        var score = languageScore(l.level);
+        var initials = String(l.name || "").slice(0, 2).toUpperCase();
         return (
           '<article class="card tile-card lang-card reveal" data-reveal>' +
           tileDecor() +
-          '<div class="tile-card__inner"><span>' +
+          '<div class="tile-card__inner">' +
+          '<div class="lang-head">' +
+          '<span class="lang-initial">' + escapeHtml(initials) + '</span>' +
+          '<span class="lang-tag">' + escapeHtml(languageTag(l.level)) + '</span>' +
+          '</div>' +
+          '<span class="lang-name">' +
           escapeHtml(l.name) +
-          "</span><em>" +
+          '</span><em class="lang-level">' +
           escapeHtml(l.level) +
-          "</em></div></article>"
+          '</em>' +
+          '<div class="lang-meter" aria-hidden="true">' +
+          '<span class="lang-meter-fill" style="width:' + String(score) + '%"></span>' +
+          '</div>' +
+          "</div></article>"
         );
       })
       .join("");

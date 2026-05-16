@@ -35,7 +35,7 @@
     ],
 
     hero: {
-      eyebrow: "Software Engineer Trainee · Cognizant · Kolkata",
+      eyebrow: "Former Software Engineer Trainee · Cognizant · Kolkata",
       titleLines: [
         { text: "Building", accent: false },
         { text: "scalable", accent: true },
@@ -47,14 +47,14 @@
       card: {
         initials: "SG",
         name: "Subham Ghosh",
-        role: "Software Engineer Trainee · Cognizant",
+        role: "Former Software Engineer Trainee · Cognizant",
         meta: [
           { label: "Email", value: "shubhamofficial0910@gmail.com" },
           { label: "Location", value: "Kolkata" },
         ],
         links: [
-          { label: "LinkedIn", href: "https://www.linkedin.com/" },
-          { label: "GitHub", href: "https://github.com/" },
+          { label: "LinkedIn", href: "https://www.linkedin.com/in/shubhamghosh" },
+          { label: "GitHub", href: "https://github.com/eternaldevotee" },
         ],
       },
     },
@@ -97,10 +97,10 @@
           tilt: true,
           company: "Cognizant",
           role: "Software Engineer Trainee",
-          badge: "Current",
-          meta: "Jul 2025 – Present · Coimbatore/Kolkata",
+          // badge: "Current",
+          meta: "Jul 2025 – May 2026 · Coimbatore/Kolkata",
           bullets: [
-            "[timeline] Feb 2026 – Present · Software Engineer Trainee",
+            "[timeline] Feb 2026 – May 2026  · Software Engineer Trainee",
             "Built RESTful APIs with Spring Boot and integrated Angular frontend services.",
             "Developed modular backend services following REST for scalable web apps.",
             "[timeline] Jul 2025 – Feb 2026 · Programmer Analyst Trainee",
